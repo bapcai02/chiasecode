@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Controllers\Controller;
+
+use App\Product;
+
+use App\SLide;
+
+use Illuminate\Support\Facades\DB;
+
+class PageController extends Controller {
+	function __construct() {
+		$loai_sp = DB::table('type_products')->get();
+		view()->share('loai_sp ', $loai_sp);
+	}
+	public function getindex() {
+		$slide       = Slide::all();
+		$new_product = Product::where('new', 1)->paginate(8);
+		$sanphamkh   = Product::where('promotion_price', '<>', 0)->paginate(6);
+		return view('page.trangchu', compact('slide', 'new_product', 'sanphamkh'));
+	}
+	public function getloaisp() {
+		return view('page.loaisp');
+	}
+	public function getchitietsp() {
+		return view('page.chitietsp');
+	}
+	public function getlienhe() {
+		return view('page.lienhe');
+	}
+	public function getgioithieu() {
+		return view('page.gioithieu');
+	}
+}

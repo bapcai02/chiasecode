@@ -19,7 +19,6 @@
 <body>
 	@include('header')
 	<!-- #header -->
-	<div class="rev-slider">
 	@yield('content')
 	 <!-- .container -->
 	@include('footer')

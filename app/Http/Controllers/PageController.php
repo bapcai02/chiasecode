@@ -13,6 +13,13 @@ use App\Http\Requests;
 use App\SLide;
 use App\Product;
 use App\ProductType;
+use App\Cart;
+use Session;
+use App\Customer;
+use App\Bill;
+use App\BillDetail;
+
+
 
 class PageController extends Controller
 {
@@ -28,13 +35,19 @@ class PageController extends Controller
     	$sanphamkh   = Product::where('promotion_price','<>',0)->paginate(6);
     	return view('page.trangchu',compact('slide','new_product','sanphamkh'));
     }
-    public function getloaisp()
+    public function getloaisp($type)
     {
-    	return view('page.loaisp');
+        $sp_theoloai = Product::where('id_type',$type)->get();
+        $sp_khac     = Product::where('id_type','<>',$type)->paginate(6);
+        $loai        = ProductType::all();
+        $loai_sp     = ProductType::where('id',$type)->first();
+    	return view('page.loaisp',compact('sp_theoloai','sp_khac','loai','loai_sp'));
     }
-    public function getchitietsp()
+    public function getchitietsp(Request $request)
     {
-    	return view('page.chitietsp');
+        $sanpham     =  Product::where('id',$request->id)->first();
+        $sp_tuongtu  = Product::where('id_type',$request->id_type)->paginate(3);
+    	return view('page.chitietsp',compact('sanpham','sp_tuongtu'));
     }
     public function getlienhe()
     {
@@ -43,5 +56,71 @@ class PageController extends Controller
     public function getgioithieu()
     {
     	return view('page.gioithieu');
+    }
+    public function getAddtoCart(Request $req,$id)
+    {
+        $product  =  Product::find($id);
+        $oldcart  = Session::has('cart')?Session::get('cart'):null;
+        $cart     = new Cart($oldcart);
+        $cart->add($product,$id);
+        $req->session()->put('cart',$cart);
+        return redirect()->back();
+    }
+    public function getDeltoCart($id)
+    {
+        $product  =  Product::find($id);
+        $oldcart  = Session::has('cart')?Session::get('cart'):null;
+        $cart     = new Cart($oldcart);
+        $cart->removeItem($id);
+        if(count($cart->items)>0){
+            session()->put('cart',$cart);
+        }
+        else{
+            session()->forget('cart');
+        }
+        return redirect()->back();
+    }
+    public function getdathang()
+    {
+        return view('page.dathang');
+    }
+
+    public function postdathang(Request $req)
+    {
+        $cart  = Session::get('cart');
+
+        $customer               = new Customer;
+        $customer->name         = $req->name;
+        $customer->gender       = $req->gender;
+        $customer->email        = $req->email;
+        $customer->address      = $req->address;
+        $customer->note         = $req->notes;
+        $customer->phone_number = $req->phone;
+        $customer->save();
+
+        $bill                   = new Bill;
+        $bill->id_customer      = $customer->$id;
+        $bill->date_oder        = date('Y-m-d');
+        $bill->total            = $cart->totalPrice;
+        $bill->payment          = $req->payment_method;
+        $bill->note             = $req->note;
+        $bill->save();
+
+        foreach ($cart->items as $key => $value) {
+            $bill_detail                = new BillDetail;
+            $bill_detail->id_bill       = $bill->id;
+            $bill_detail->id_product    = $key;
+            $bill_detail->quantity      =  $value['qty'];
+            $bill_detail->unit_price    = $value['price']/$value['qty'];
+            $bill_detail->save();
+        } 
+
+        Session::forget('cart');
+        return redirect()->back()->with('thongbao','đặt hàng thàng công');
+    }
+    public function getsearch(Request $req)
+    {
+        $product  =  Product::where('name','like','%'.$req->key.'%')->orWhere('unit_price',$req->key)->get();
+        return view('page.search',compact('product'));
     }
 }

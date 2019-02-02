@@ -27,60 +27,45 @@
 			<div class="pull-right beta-components space-left ov">
 				<div class="space10">&nbsp;</div>
 				<div class="beta-comp">
-					<form role="search" method="get" id="searchform" action="/">
+					<form role="search" method="get" id="searchform" action="{{ route('search') }}">
 				        <input type="text" value="" name="s" id="s" placeholder="Nhập từ khóa..." />
 				        <button class="fa fa-search" type="submit" id="searchsubmit"></button>
 					</form>
 				</div>
 
 				<div class="beta-comp">
-					<div class="cart">
-						<div class="beta-select"><i class="fa fa-shopping-cart"></i> Giỏ hàng (Trống) <i class="fa fa-chevron-down"></i></div>
-						<div class="beta-dropdown cart-body">
-							<div class="cart-item">
-								<div class="media">
-									<a class="pull-left" href="#"><img src="source/assets/dest/images/products/cart/1.png" alt=""></a>
-									<div class="media-body">
-										<span class="cart-item-title">Sample Woman Top</span>
-										<span class="cart-item-options">Size: XS; Colar: Navy</span>
-										<span class="cart-item-amount">1*<span>$49.50</span></span>
+					@if(Session::has('cart'))
+						<div class="cart">
+							<div class="beta-select"><i class="fa fa-shopping-cart"></i> Giỏ hàng @if(Session::has('cart')){{ Session('cart')->totalQty 
+								}}@else Trống @endif<i class="fa fa-chevron-down"></i></div>
+							<div class="beta-dropdown cart-body">
+								
+									@foreach($product_cart as $pro)
+										<div class="cart-item">
+											<a class="cart-item-delete" href="{{ route('xoagiohang',$pro['item']['id']) }}"><i class="fa fa-times"></i></a>
+											<div class="media">
+												<a class="pull-left" href="#"><img src="source/image/product/{{ $pro['item']['image']}}" alt=""></a>
+												<div class="media-body">
+													<span class="cart-item-title">{{ $pro['item']['name'] }}</span>
+								
+													<span class="cart-item-amount">{{ $pro['qty']}}*<span>{{ $pro['item']['unit_price']}} </span></span>
+												</div>
+											</div>
+										</div>
+									@endforeach	
+								
+								<div class="cart-caption">
+									<div class="cart-total text-right">Tổng tiền: <span class="cart-total-value">{{ Session('cart')->totalPrice }}</span></div>
+									<div class="clearfix"></div>
+
+									<div class="center">
+										<div class="space10">&nbsp;</div>
+										<a href="{{ route('dathang') }}" class="beta-btn primary text-center">Đặt hàng <i class="fa fa-chevron-right"></i></a>
 									</div>
 								</div>
 							</div>
-
-							<div class="cart-item">
-								<div class="media">
-									<a class="pull-left" href="#"><img src="source/assets/dest/images/products/cart/2.png" alt=""></a>
-									<div class="media-body">
-										<span class="cart-item-title">Sample Woman Top</span>
-										<span class="cart-item-options">Size: XS; Colar: Navy</span>
-										<span class="cart-item-amount">1*<span>$49.50</span></span>
-									</div>
-								</div>
-							</div>
-
-							<div class="cart-item">
-								<div class="media">
-									<a class="pull-left" href="#"><img src="source/assets/dest/images/products/cart/3.png" alt=""></a>
-									<div class="media-body">
-										<span class="cart-item-title">Sample Woman Top</span>
-										<span class="cart-item-options">Size: XS; Colar: Navy</span>
-										<span class="cart-item-amount">1*<span>$49.50</span></span>
-									</div>
-								</div>
-							</div>
-
-							<div class="cart-caption">
-								<div class="cart-total text-right">Tổng tiền: <span class="cart-total-value">$34.55</span></div>
-								<div class="clearfix"></div>
-
-								<div class="center">
-									<div class="space10">&nbsp;</div>
-									<a href="checkout.html" class="beta-btn primary text-center">Đặt hàng <i class="fa fa-chevron-right"></i></a>
-								</div>
-							</div>
-						</div>
-					</div> <!-- .cart -->
+						</div> <!-- .cart -->
+					@endif	
 				</div>
 			</div>
 			<div class="clearfix"></div>
@@ -92,11 +77,11 @@
 			<div class="visible-xs clearfix"></div>
 			<nav class="main-menu">
 				<ul class="l-inline ov">
-					<li><a href="{{ route('index') }}">Trang chủ</a></li>
+					<li><a href="{{ route('trang-chu') }}">Trang chủ</a></li>
 					<li><a href="#"> Loại Sản phẩm</a>
 						<ul class="sub-menu">
 							@foreach($loai_sp as $sp)
-								<li><a href="{{ route('loaisp') }}">{{ $sp->name }}</a></li>
+								<li><a href="{{ route('loaisanpham',$sp->id) }}">{{ $sp->name }}</a></li>
 							@endforeach	
 						</ul>
 					</li>

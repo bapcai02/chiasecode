@@ -15,12 +15,32 @@ Route::get('/', function () {
 		return view('welcome');
 	});
 
-Route::get('index', 'PageController@getindex');
+Route::get('index', ['as' => 'trang-chu',
+		'uses'                  => 'PageController@getindex']);
 
-Route::get('loaisp/{id}', 'PageController@getloaisp');
+Route::get('loaisp/{type}', ['as' => 'loaisanpham',
+		'uses'                          => 'PageController@getloaisp']);
 
-Route::get('chitietsp/{id}', 'PageController@getchitietsp');
+Route::get('chitietsp/{id}', ['as' => 'chitietsanpham',
+		'uses'                           => 'PageController@getchitietsp']);
 
-Route::get('lienhe', 'PageController@getlienhe');
+Route::get('lienhe', ['as' => 'lienhe',
+		'uses'                   => 'PageController@getlienhe']);
 
-Route::get('gioithieu', 'PageController@getgioithieu');
+Route::get('gioithieu', ['as' => 'gioithieu',
+		'uses'                      => 'PageController@getgioithieu']);
+
+Route::get('add-to-cart/{id}', ['as' => 'themgiohang',
+		'uses'                             => 'PageController@getAddtoCart']);
+
+Route::get('del-cart/{id}', ['as' => 'xoagiohang',
+		'uses'                          => 'PageController@getDeltoCart']);
+
+Route::get('dat-hang', ['as' => 'dathang',
+		'uses'                     => 'PageController@getdathang']);
+
+Route::post('dat-hang', ['as' => 'dathang',
+		'uses'                      => 'PageController@postdathang']);
+
+Route::get('search', ['as' => 'search',
+		'uses'                   => 'PageController@getsearch']);

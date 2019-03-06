@@ -1,0 +1,61 @@
+<?php
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::get('index',['as'=>'trang-chu',
+			'uses'=>'PageController@getindex']);
+
+Route::get('loaisp/{type}',['as'=>'loaisanpham',
+			'uses'=>'PageController@getloaisp']);
+
+Route::get('chitietsp/{id}',['as'=>'chitietsanpham',
+			'uses'=>'PageController@getchitietsp']);
+
+Route::get('lienhe',['as'=>'lienhe',
+	'uses'=>'PageController@getlienhe']);
+
+Route::get('gioithieu',['as'=>'gioithieu',
+	'uses'=>'PageController@getgioithieu']);
+
+Route::get('add-to-cart/{id}',['as'=>'themgiohang',
+	'uses'=>'PageController@getAddtoCart']);
+
+Route::get('del-cart/{id}',['as'=>'xoagiohang',
+	'uses'=>'PageController@getDeltoCart']);
+
+Route::get('dat-hang',['as'=>'dathang',
+	'uses'=>'PageController@getdathang']);
+
+Route::post('dat-hang',['as'=>'dathang',
+	'uses'=>'PageController@postdathang']);
+
+Route::get('search',['as'=>'search',
+	'uses'=>'PageController@getsearch']);
+
+Route::get('dang-nhap',['as'=>'login',
+	'uses'=>'PageController@getdangnhap']);
+
+Route::post('dang-nhap',['as'=>'login',
+	'uses'=>'PageController@postdangnhap']);
+
+Route::get('dang-ky',['as'=>'singin',
+	'uses'=>'PageController@getdangky']);
+
+Route::post('dang-ky',['as'=>'singin',
+	'uses'=>'PageController@postdangky']);
+
+Route::get('dang-xuat',['as'=>'logout',
+	'uses'=>'PageController@postdangxuat']);
